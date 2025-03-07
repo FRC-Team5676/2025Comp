@@ -23,7 +23,7 @@ public class ClimberSubsystem extends SubsystemBase {
   
   private double m_targetRadians;
 
-  private static final double kGearRatio = 45/1;
+  private static final double kGearRatio = 5/1;
   private static final double kIntakeArmEncoderPositionFactor = (2 * Math.PI) / kGearRatio;
 
   private final int m_ClimberCanId = 56;
