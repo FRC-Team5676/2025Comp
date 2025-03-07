@@ -20,6 +20,18 @@ public class ArmMoveCommands extends Command {
         addRequirements(ballScrew, arm);
     }
 
+    public Command moveToClimb() {
+        return Commands.sequence(
+            Commands.parallel(
+                new InstantCommand(() -> m_Arm.moveRotateArm(-100)),
+                new InstantCommand(() -> m_Arm.moveLinearArmRetracted()),
+                new InstantCommand(() -> m_Arm.moveWrist(0))
+            ),
+            Commands.waitSeconds(0.5),
+            new InstantCommand(() -> m_BallScrew.moveToDownPosition())
+        );
+    }
+
     public Command moveToZero() {
         return Commands.sequence(
             Commands.parallel(

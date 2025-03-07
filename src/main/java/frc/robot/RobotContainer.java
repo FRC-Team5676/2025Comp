@@ -127,5 +127,6 @@ public class RobotContainer {
         operator.povLeft()
             .and(operator.button(XboxController.Button.kY.value))
             .onTrue(armCommands.placeL4());
+        operator.povDown().onTrue(armCommands.moveToClimb());
     }
 }
