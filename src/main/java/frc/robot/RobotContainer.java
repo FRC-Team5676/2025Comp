@@ -12,9 +12,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+
 import frc.robot.commands.arms.ArmMoveCommands;
 import frc.robot.commands.arms.DefaultArmCommand;
 import frc.robot.commands.auto.AutoCommands;
@@ -127,6 +129,11 @@ public class RobotContainer {
         operator.povLeft()
             .and(operator.button(XboxController.Button.kY.value))
             .onTrue(armCommands.placeL4());
-        operator.povDown().onTrue(armCommands.moveToClimb());
+        operator.povDown().onTrue(Commands.sequence(
+            Commands.parallel(
+                armCommands.moveToClimb(),
+                new InstantCommand(tray::moveToDownPosition)
+            )
+        ));
     }
 }
