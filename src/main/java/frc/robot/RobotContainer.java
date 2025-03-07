@@ -9,8 +9,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -72,10 +70,9 @@ public class RobotContainer {
     }
 
     private void addAutonomousChoices() {
-        autonManager.addDefaultOption("Middle To Side", AutoCommands.moveToReefMiddleToSide(tray));
-        autonManager.addDefaultOption("Middle", AutoCommands.moveToReefMiddle(tray));
-        autonManager.addOption("Left", AutoCommands.moveToReefCoralTopRightTOP(tray));
-        autonManager.addOption("Right", AutoCommands.moveToReefCoralBottomRightBOTTOM(tray));
+        autonManager.addDefaultOption("Middle To Side", AutoCommands.moveMiddleToSide(tray));
+        autonManager.addOption("Left", AutoCommands.moveLeft(tray));
+        autonManager.addOption("Right", AutoCommands.moveRight(tray));
         
       }
     

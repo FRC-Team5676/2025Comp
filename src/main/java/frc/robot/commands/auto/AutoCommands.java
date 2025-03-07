@@ -9,10 +9,10 @@ import frc.robot.subsystems.TraySubsystem;
 
 public class AutoCommands extends Command {
 
-    public static Command moveToReefCoralTopRightTOP(TraySubsystem tray) {
+    public static Command moveLeft(TraySubsystem tray) {
         return Commands.sequence(
             new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Coral Top Right - TOP"),
+            new PathPlannerAuto("Left"),
             Commands.waitSeconds(3),
             new InstantCommand(() -> tray.moveToDownPosition()),
             Commands.waitSeconds(1),
@@ -20,10 +20,10 @@ public class AutoCommands extends Command {
         );
     }
 
-    public static Command moveToReefCoralMiddleRightTOP(TraySubsystem tray) {
+    public static Command moveRight(TraySubsystem tray) {
         return Commands.sequence(
             new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Coral Middle Right - TOP"),
+            new PathPlannerAuto("Right"),
             Commands.waitSeconds(3),
             new InstantCommand(() -> tray.moveToDownPosition()),
             Commands.waitSeconds(1),
@@ -31,62 +31,7 @@ public class AutoCommands extends Command {
         );
     }
 
-    public static Command moveToReefCoralBottomRightTOP(TraySubsystem tray) {
-        return Commands.sequence(
-            new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Coral Bottom Right - TOP"),
-            Commands.waitSeconds(3),
-            new InstantCommand(() -> tray.moveToDownPosition()),
-            Commands.waitSeconds(1),
-            new InstantCommand(() -> tray.moveToUpPosition())
-        );
-    }
-
-    public static Command moveToReefCoralTopRightBOTTOM(TraySubsystem tray) {
-        return Commands.sequence(
-            new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Coral Top Right - BOTTOM"),
-            Commands.waitSeconds(3),
-            new InstantCommand(() -> tray.moveToDownPosition()),
-            Commands.waitSeconds(1),
-            new InstantCommand(() -> tray.moveToUpPosition())
-        );
-    }
-
-    public static Command moveToReefCoralMiddleRightBOTTOM(TraySubsystem tray) {
-        return Commands.sequence(
-            new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Coral Middle Right - BOTTOM"),
-            Commands.waitSeconds(3),
-            new InstantCommand(() -> tray.moveToDownPosition()),
-            Commands.waitSeconds(1),
-            new InstantCommand(() -> tray.moveToUpPosition())
-        );
-    }
-
-    public static Command moveToReefCoralBottomRightBOTTOM(TraySubsystem tray) {
-        return Commands.sequence(
-            new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Coral Bottom Right - BOTTOM"),
-            Commands.waitSeconds(3),
-            new InstantCommand(() -> tray.moveToDownPosition()),
-            Commands.waitSeconds(1),
-            new InstantCommand(() -> tray.moveToUpPosition())
-        );
-    }
-
-    public static Command moveToReefMiddle(TraySubsystem tray) {
-        return Commands.sequence(
-            new InstantCommand(() -> tray.moveToUpPosition()),
-            new PathPlannerAuto("Middle"),
-            Commands.waitSeconds(3),
-            new InstantCommand(() -> tray.moveToDownPosition()),
-            Commands.waitSeconds(1),
-            new InstantCommand(() -> tray.moveToUpPosition())
-        );
-    }
-
-    public static Command moveToReefMiddleToSide(TraySubsystem tray) {
+    public static Command moveMiddleToSide(TraySubsystem tray) {
         return Commands.sequence(
             new InstantCommand(() -> tray.moveToUpPosition()),
             Commands.waitSeconds(9),
