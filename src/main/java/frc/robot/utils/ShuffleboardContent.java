@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BallScrewSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.RotateAlgaeSubsystem;
 import frc.robot.subsystems.TraySubsystem;
 
 /** Add your docs here. */
@@ -75,23 +74,6 @@ public class ShuffleboardContent {
 
         public static void initClimber(ClimberSubsystem drive) {
                 ShuffleboardTab drLayout1 = Shuffleboard.getTab("Climber");
-
-                drLayout1.addNumber("Angle", () -> drive.getActualDegrees())
-                        .withPosition(1, 1)
-                        .withSize(2, 1);
-                drLayout1.addNumber("Target Angle", () -> drive.getTargetDegrees())
-                        .withPosition(1, 2)
-                        .withSize(2, 1);
-                drLayout1.addNumber("Min Angle", () -> drive.getMinDegrees())
-                        .withPosition(1, 3)
-                        .withSize(2, 1);
-                drLayout1.addNumber("Max Angle", () -> drive.getMaxDegrees())
-                        .withPosition(1, 4)
-                        .withSize(2, 1);
-        }
-
-        public static void initRotateAlgae(RotateAlgaeSubsystem drive) {
-                ShuffleboardTab drLayout1 = Shuffleboard.getTab("Algae");
 
                 drLayout1.addNumber("Angle", () -> drive.getActualDegrees())
                         .withPosition(1, 1)

@@ -23,7 +23,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BallScrewSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.RotateAlgaeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TraySubsystem;
 import frc.robot.utils.AutonManager;
@@ -37,7 +36,6 @@ public class RobotContainer {
     private final ArmSubsystem arm = new ArmSubsystem(ballScrew);
     private final TraySubsystem tray = new TraySubsystem();
     private final ClimberSubsystem climber = new ClimberSubsystem();
-    private final RotateAlgaeSubsystem rotateAlgae = new RotateAlgaeSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -129,11 +127,5 @@ public class RobotContainer {
         operator.povLeft()
             .and(operator.button(XboxController.Button.kY.value))
             .onTrue(armCommands.placeL4());
-
-        // Algea
-        operator.povDown().onTrue(new InstantCommand(rotateAlgae::intakeAlgea));
-        operator.povDown().onFalse(new InstantCommand(rotateAlgae::stop));
-        driver.button(2).onTrue(new InstantCommand(rotateAlgae::shootAlgea));
-        driver.button(2).onFalse(new InstantCommand(rotateAlgae::stop));
     }
 }

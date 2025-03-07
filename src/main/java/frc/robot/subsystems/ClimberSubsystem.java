@@ -33,7 +33,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final SparkClosedLoopController m_driveController;
 
   private final double minRadians = Units.degreesToRadians(-1000);
-  private final double maxRadians = Units.degreesToRadians(0);
+  private final double maxRadians = Units.degreesToRadians(1000);
 
   public ClimberSubsystem() {
     // Drive Motor setup
@@ -49,10 +49,11 @@ public class ClimberSubsystem extends SubsystemBase {
     .p(0.5)
     .i(0)
     .d(0)
-    .outputRange(-0.75, 0.75);
+    .outputRange(-1, 1);
     config.encoder.positionConversionFactor(kIntakeArmEncoderPositionFactor);
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit(40);
+
     m_driveMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_targetRadians = m_driveEncoder.getPosition();
