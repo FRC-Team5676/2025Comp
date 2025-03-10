@@ -23,7 +23,7 @@ public class ClimberSubsystem extends SubsystemBase {
   
   private double m_targetRadians;
 
-  private static final double kGearRatio = 45/1;
+  private static final double kGearRatio = 5/1;
   private static final double kIntakeArmEncoderPositionFactor = (2 * Math.PI) / kGearRatio;
 
   private final int m_ClimberCanId = 56;
@@ -32,8 +32,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private final SparkMax m_driveMotor;
   private final SparkClosedLoopController m_driveController;
 
-  private final double minRadians = Units.degreesToRadians(-3500);
-  private final double maxRadians = Units.degreesToRadians(3500);
+  private final double minRadians = Units.degreesToRadians(-13500);
+  private final double maxRadians = Units.degreesToRadians(0);
 
   public ClimberSubsystem() {
     // Drive Motor setup
@@ -83,7 +83,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void driveArm(double degrees) {
     if (Math.abs(degrees) > 0.05) {
-      m_targetRadians += Units.degreesToRadians(degrees * 10);
+      m_targetRadians += Units.degreesToRadians(degrees * 100);
     }
     setReferencePeriodic();
   }
