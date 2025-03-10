@@ -34,6 +34,9 @@ public class RobotContainer {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
 
+    private final double LinearDeadband = 0.1;
+    private final double RotationalDeadband = 0.7;
+    
     private final BallScrewSubsystem ballScrew = new BallScrewSubsystem();
     private final ArmSubsystem arm = new ArmSubsystem(ballScrew);
     private final TraySubsystem tray = new TraySubsystem();
@@ -41,7 +44,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-        .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.35) // Add a 10% deadband
+        //.withDeadband(0.1).withRotationalDeadband(0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     //private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -61,7 +64,7 @@ public class RobotContainer {
      public RobotContainer() {
         addAutonomousChoices();
         autonManager.displayChoices();
-    
+
         configureBindings();
     }
         
@@ -84,11 +87,13 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive.withVelocityX(-driver.getY() * MaxSpeed) // Drive forward with
-                                                                                                 // negative Y (forward)
-                        .withVelocityY(-driver.getX() * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-driver.getTwist() * MaxAngularRate) // Drive counterclockwise with
-                                                                                  // negative X (left)
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(Math.abs(-driver.getY()) < LinearDeadband ? 0 :
+                        (1 / (0.9 - LinearDeadband)) * (-driver.getY() + (-Math.signum(-driver.getY()) * LinearDeadband)) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(Math.abs(-driver.getX()) < LinearDeadband ? 0 :
+                        (1 / (0.9 - LinearDeadband)) * (-driver.getX() + (-Math.signum(-driver.getX()) * LinearDeadband)) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(Math.abs(-driver.getTwist()) < RotationalDeadband ? 0 :
+                        (1 / (0.9 - RotationalDeadband)) * (-driver.getTwist() + (-Math.signum(-driver.getTwist()) * RotationalDeadband)) * MaxAngularRate) // Drive counterclockwise with negative twist
                 ));
 
         drivetrain.registerTelemetry(logger::telemeterize);
