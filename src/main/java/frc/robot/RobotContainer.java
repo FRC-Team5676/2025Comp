@@ -89,11 +89,11 @@ public class RobotContainer {
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
                     .withVelocityX(Math.abs(-driver.getY()) < LinearDeadband ? 0 :
-                        (1 / (0.9 - LinearDeadband)) * (-driver.getY() + (-Math.signum(-driver.getY()) * LinearDeadband)) * MaxSpeed) // Drive forward with negative Y (forward)
+                        (1 / (1 - LinearDeadband)) * (-driver.getY() + (-Math.signum(-driver.getY()) * LinearDeadband)) * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(Math.abs(-driver.getX()) < LinearDeadband ? 0 :
-                        (1 / (0.9 - LinearDeadband)) * (-driver.getX() + (-Math.signum(-driver.getX()) * LinearDeadband)) * MaxSpeed) // Drive left with negative X (left)
+                        (1 / (1 - LinearDeadband)) * (-driver.getX() + (-Math.signum(-driver.getX()) * LinearDeadband)) * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(Math.abs(-driver.getTwist()) < RotationalDeadband ? 0 :
-                        (1 / (0.9 - RotationalDeadband)) * (-driver.getTwist() + (-Math.signum(-driver.getTwist()) * RotationalDeadband)) * MaxAngularRate) // Drive counterclockwise with negative twist
+                        (1 / (1 - RotationalDeadband)) * (-driver.getTwist() + (-Math.signum(-driver.getTwist()) * RotationalDeadband)) * MaxAngularRate) // Drive counterclockwise with negative twist
                 ));
 
         drivetrain.registerTelemetry(logger::telemeterize);
