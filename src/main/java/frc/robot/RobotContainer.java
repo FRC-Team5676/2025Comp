@@ -31,11 +31,11 @@ import frc.robot.utils.AutonManager;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+    private double MaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
 
-    private final double LinearDeadband = 0.1;
-    private final double RotationalDeadband = 0.7;
+    private final double LinDeadband = 0.1;
+    private final double RotDeadband = 0.7;
     
     private final BallScrewSubsystem ballScrew = new BallScrewSubsystem();
     private final ArmSubsystem arm = new ArmSubsystem(ballScrew);
@@ -88,12 +88,12 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
-                    .withVelocityX(Math.abs(-driver.getY()) < LinearDeadband ? 0 :
-                        (1 / (1 - LinearDeadband)) * (-driver.getY() + (-Math.signum(-driver.getY()) * LinearDeadband)) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(Math.abs(-driver.getX()) < LinearDeadband ? 0 :
-                        (1 / (1 - LinearDeadband)) * (-driver.getX() + (-Math.signum(-driver.getX()) * LinearDeadband)) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(Math.abs(-driver.getTwist()) < RotationalDeadband ? 0 :
-                        (1 / (1 - RotationalDeadband)) * (-driver.getTwist() + (-Math.signum(-driver.getTwist()) * RotationalDeadband)) * MaxAngularRate) // Drive counterclockwise with negative twist
+                    .withVelocityX(Math.abs(-driver.getY()) < LinDeadband ? 0 :
+                        (1 / (1 - LinDeadband)) * (-driver.getY() + (-Math.signum(-driver.getY()) * LinDeadband)) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(Math.abs(-driver.getX()) < LinDeadband ? 0 :
+                        (1 / (1 - LinDeadband)) * (-driver.getX() + (-Math.signum(-driver.getX()) * LinDeadband)) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(Math.abs(-driver.getTwist()) < RotDeadband ? 0 :
+                        (1 / (1 - RotDeadband)) * (-driver.getTwist() + (-Math.signum(-driver.getTwist()) * RotDeadband)) * MaxAngularRate) // Drive counterclockwise with negative twist
                 ));
 
         drivetrain.registerTelemetry(logger::telemeterize);
