@@ -44,11 +44,8 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-        //.withDeadband(0.1).withRotationalDeadband(0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    //private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    //private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -57,9 +54,6 @@ public class RobotContainer {
     private final CommandXboxController operator = new CommandXboxController(1);
 
     public final SwerveSubsystem drivetrain = TunerConstants.createDrivetrain();
-
-    /* Path follower */
-    // private final SendableChooser<Command> autoChooser;
 
      public RobotContainer() {
         addAutonomousChoices();
@@ -119,10 +113,16 @@ public class RobotContainer {
         operator.povUp().whileTrue(new InstantCommand(tray::moveToDownPosition));
 
         // Move Arms
-        operator.button(XboxController.Button.kBack.value).onTrue(armCommands.moveToZero());
+        operator.button(XboxController.Button.kBack.value).onTrue(Commands.sequence(
+            new InstantCommand(tray::moveToUpPosition),
+            armCommands.moveToZero()
+        ));
         operator.povCenter()
             .and(operator.button(XboxController.Button.kX.value))
-            .onTrue(armCommands.moveToHome());
+            .onTrue(Commands.sequence(
+                new InstantCommand(tray::moveToUpPosition),
+                armCommands.moveToHome()
+            ));
         operator.povLeft()
             .and(operator.button(XboxController.Button.kX.value))
             .onTrue(armCommands.pickupCoral());
