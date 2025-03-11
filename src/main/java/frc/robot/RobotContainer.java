@@ -178,7 +178,7 @@ public class RobotContainer {
         
         if (Math.signum(twist) < 0) {
             // CCW
-            deadband = 0.7;
+            deadband = 0.7; // larger on this side because of joystick sensitivity on CCW rotation
         } else if (Math.signum(twist) > 0) {
             // CW
             deadband = 0.1;
