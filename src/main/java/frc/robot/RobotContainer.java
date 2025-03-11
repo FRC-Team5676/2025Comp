@@ -34,9 +34,6 @@ public class RobotContainer {
     private double MaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
 
-    private final double LinDeadband = 0.1;
-    private final double RotDeadband = 0.7;
-    
     private final BallScrewSubsystem ballScrew = new BallScrewSubsystem();
     private final ArmSubsystem arm = new ArmSubsystem(ballScrew);
     private final TraySubsystem tray = new TraySubsystem();
@@ -192,7 +189,7 @@ public class RobotContainer {
         if (Math.abs(twist) < deadband) {
             return 0;
         } else {
-            return (1 / (1 - deadband)) * (twist + (-Math.signum(twist) * deadband)) * MaxSpeed;
+            return (1 / (1 - deadband)) * (twist + (-Math.signum(twist) * deadband)) * MaxAngularRate;
         }
     }
 }
