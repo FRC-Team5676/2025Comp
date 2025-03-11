@@ -174,10 +174,10 @@ public class RobotContainer {
 
         if (Math.signum(value) <= 0) {
             // CCW
-            deadband = 0.7; // larger on this side because of joystick sensitivity on CCW rotation
+            deadband = 0.5; // larger on this side because of joystick sensitivity on CCW rotation
         } else if (Math.signum(value) > 0) {
             // CW
-            deadband = 0.1;
+            deadband = 0.0;
         } else {
             return 0;
         }
