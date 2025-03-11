@@ -82,18 +82,15 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
-                    .withVelocityX(Math.abs(-driver.getY()) < LinDeadband ? 0 :
-                        (1 / (1 - LinDeadband)) * (-driver.getY() + (-Math.signum(-driver.getY()) * LinDeadband)) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(Math.abs(-driver.getX()) < LinDeadband ? 0 :
-                        (1 / (1 - LinDeadband)) * (-driver.getX() + (-Math.signum(-driver.getX()) * LinDeadband)) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(Math.abs(-driver.getTwist()) < RotDeadband ? 0 :
-                        (1 / (1 - RotDeadband)) * (-driver.getTwist() + (-Math.signum(-driver.getTwist()) * RotDeadband)) * MaxAngularRate) // Drive counterclockwise with negative twist
+                    .withVelocityX(getY())
+                    .withVelocityY(getX())
+                    .withRotationalRate(getTwist())
                 ));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        // Robot centric driving
-        driver.button(12).whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getY(), -driver.getX()))));
+        // Robot centric driving *** PRESS AND HOLD BUTTON ***
+        driver.button(12).whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(getY(), getX()))));
 
         // Reset the field-centric heading
         driver.button(8).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -112,33 +109,90 @@ public class RobotContainer {
         operator.povUp().onFalse(new InstantCommand(tray::moveToUpPosition));
         operator.povUp().whileTrue(new InstantCommand(tray::moveToDownPosition));
 
-        // Move Arms
+        /* Move Arms To Zero */
         operator.button(XboxController.Button.kBack.value).onTrue(Commands.sequence(
             new InstantCommand(tray::moveToUpPosition),
             armCommands.moveToZero()
         ));
+
+        /* Move Arms To Home */
         operator.povCenter()
             .and(operator.button(XboxController.Button.kX.value))
             .onTrue(Commands.sequence(
                 new InstantCommand(tray::moveToUpPosition),
                 armCommands.moveToHome()
             ));
+
+            /* Move Arms To Pickup Position */
         operator.povLeft()
             .and(operator.button(XboxController.Button.kX.value))
             .onTrue(armCommands.pickupCoral());
+
+        /* Move Arms To L2 Position */
         operator.button(XboxController.Button.kA.value).onTrue(armCommands.moveToL2());
+
+        /* Move Arms To L3 Position */
         operator.button(XboxController.Button.kB.value).onTrue(armCommands.moveToL3());
+
+        /* Move Arms To L4 Position */
         operator.povCenter()
             .and(operator.button(XboxController.Button.kY.value))
             .onTrue(armCommands.moveToL4());
+
+        /* Place L4 Position */
         operator.povLeft()
             .and(operator.button(XboxController.Button.kY.value))
             .onTrue(armCommands.placeL4());
+        
+        /* Move Arms To Climb */
         operator.povDown().onTrue(Commands.sequence(
             Commands.parallel(
                 armCommands.moveToClimb(),
                 new InstantCommand(tray::moveToDownPosition)
             )
         ));
+    }
+
+    private double getX() {
+        double xDeadband = 0.1;
+        double x = -driver.getX(); // Drive left with negative X (left)
+        
+        if (Math.abs(x) < xDeadband) {
+            return 0;
+        } else {
+            return (1 / (1 - xDeadband)) * (x + (-Math.signum(x) * xDeadband)) * MaxSpeed;
+        }
+    }
+
+    private double getY() {
+        double xDeadband = 0.1;
+        double y = -driver.getY(); // Drive forward with negative Y (forward)
+        
+        if (Math.abs(y) < xDeadband) {
+            return 0;
+        } else {
+            return (1 / (1 - xDeadband)) * (y + (-Math.signum(y) * xDeadband)) * MaxSpeed;
+        }
+    }
+
+    private double getTwist() {
+        double deadband;
+        double twist = -driver.getTwist(); // Drive counterclockwise with negative twist (CCW)
+        
+        if (Math.signum(twist) < 0) {
+            // CCW
+            deadband = 0.7;
+        } else if (Math.signum(twist) > 0) {
+            // CW
+            deadband = 0.1;
+        } else {
+            return 0;
+        }
+
+        if (Math.abs(twist) < deadband) {
+            return 0;
+        } else {
+            return (1 / (1 - deadband)) * (twist + (-Math.signum(twist) * deadband)) * MaxSpeed;
+        }
     }
 }
