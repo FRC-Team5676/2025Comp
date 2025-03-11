@@ -83,7 +83,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void driveArm(double degrees) {
     if (Math.abs(degrees) > 0.05) {
-      m_targetRadians += Units.degreesToRadians(degrees * 100);
+      m_targetRadians += Units.degreesToRadians(degrees * 300);
     }
     setReferencePeriodic();
   }
