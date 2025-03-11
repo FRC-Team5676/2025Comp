@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -150,45 +151,39 @@ public class RobotContainer {
     }
 
     private double getX() {
-        double xDeadband = 0.1;
-        double x = -driver.getX(); // Drive left with negative X (left)
-        
-        if (Math.abs(x) < xDeadband) {
-            return 0;
-        } else {
-            return (1 / (1 - xDeadband)) * (x + (-Math.signum(x) * xDeadband)) * MaxSpeed;
-        }
+        double deadband = 0.05;
+        double value = -driver.getX(); // Drive left with negative X (left)
+
+        value = MathUtil.applyDeadband(value, deadband);
+        value = Math.signum(value) * Math.pow(value, 2);
+        return value * MaxSpeed;
     }
 
     private double getY() {
-        double xDeadband = 0.1;
-        double y = -driver.getY(); // Drive forward with negative Y (forward)
-        
-        if (Math.abs(y) < xDeadband) {
-            return 0;
-        } else {
-            return (1 / (1 - xDeadband)) * (y + (-Math.signum(y) * xDeadband)) * MaxSpeed;
-        }
+        double deadband = 0.05;
+        double value = -driver.getY(); // Drive forward with negative Y (forward)
+
+        value = MathUtil.applyDeadband(value, deadband);
+        value = Math.signum(value) * Math.pow(value, 2);
+        return value * MaxSpeed;
     }
 
     private double getTwist() {
         double deadband;
-        double twist = -driver.getTwist(); // Drive counterclockwise with negative twist (CCW)
-        
-        if (Math.signum(twist) < 0) {
+        double value = -driver.getTwist(); // Drive counterclockwise with negative twist (CCW)
+
+        if (Math.signum(value) <= 0) {
             // CCW
             deadband = 0.7; // larger on this side because of joystick sensitivity on CCW rotation
-        } else if (Math.signum(twist) > 0) {
+        } else if (Math.signum(value) > 0) {
             // CW
             deadband = 0.1;
         } else {
             return 0;
         }
 
-        if (Math.abs(twist) < deadband) {
-            return 0;
-        } else {
-            return (1 / (1 - deadband)) * (twist + (-Math.signum(twist) * deadband)) * MaxAngularRate;
-        }
+        value = MathUtil.applyDeadband(value, deadband);
+        value = Math.signum(value) * Math.pow(value, 2);
+        return value * MaxAngularRate;
     }
 }
