@@ -10,7 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,9 +40,10 @@ public class RobotContainer {
     private final ClimberSubsystem climber = new ClimberSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    private final SwerveRequest.FieldCentric driveField = new SwerveRequest.FieldCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.RobotCentric driveRobot = new SwerveRequest.RobotCentric()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -78,7 +79,7 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive
+                drivetrain.applyRequest(() -> driveField
                     .withVelocityX(getY())
                     .withVelocityY(getX())
                     .withRotationalRate(getTwist())
@@ -86,8 +87,19 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        // Robot centric driving *** PRESS AND HOLD BUTTON ***
-        driver.button(12).whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(getY(), getX()))));
+        // Limelight driving
+        driver.button(1).whileTrue(
+                drivetrain.applyRequest(() -> driveRobot
+                        .withVelocityX(limelightForward())
+                        .withVelocityY(limelightSideToSide())
+                        .withRotationalRate(limelightRotation())));
+
+        // Robot centric driving
+        driver.button(12).whileTrue(
+                drivetrain.applyRequest(() -> driveRobot
+                        .withVelocityX(getY())
+                        .withVelocityY(getX())
+                        .withRotationalRate(getTwist())));
 
         // Reset the field-centric heading
         driver.button(8).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -190,5 +202,71 @@ public class RobotContainer {
         value = MathUtil.applyDeadband(value, deadband);
         value = Math.signum(value) * Math.pow(value, 2);
         return value * MaxAngularRate * multiplier;
+    }
+
+    private double limelightRotation() {
+        // kP (constant of proportionality)
+        // this is a hand-tuned number that determines the aggressiveness of our
+        // proportional control loop
+        // if it is too high, the robot will oscillate around.
+        // if it is too low, the robot will never reach its target
+        // if the robot never turns in the correct direction, kP should be inverted.
+        // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
+        // rightmost edge of
+        // your limelight 3 feed, tx should return roughly 31 degrees.
+
+        double kP = .035;
+        double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+
+        // Drive counterclockwise with negative twist (CCW)
+        return -targetingAngularVelocity * MaxAngularRate;
+    }
+
+    private double limelightForward() {
+        double kP = 0.1;
+        double currentDistance = DistanceToTargetForward();
+        double desiredDistance = Units.inchesToMeters(12);
+
+        double distanceError = desiredDistance - currentDistance;
+        double forwardSpeed = distanceError * kP;
+
+        // Drive forward with negative Y (forward)
+        return -forwardSpeed * MaxSpeed;
+    }
+
+    private double DistanceToTargetForward() {
+        // d = (h2-h1) / tan(a1+a2)
+        // https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-estimating-distance
+
+        double h1 = Units.inchesToMeters(24); // height of the camera
+        double h2 = Units.inchesToMeters(12); // height of the target
+        double a1 = Units.degreesToRadians(0); // y angle of the camera
+        double a2 = Units.degreesToRadians(LimelightHelpers.getTY("limelight")); // y angle of the target
+
+        return (h2 - h1) / Math.tan(a1 + a2);
+    }
+
+    private double limelightSideToSide() {
+        double kP = 0.1;
+        double currentDistance = DistanceToTargetSideToSide();
+        double desiredDistance = Units.inchesToMeters(0);
+
+        double distanceError = desiredDistance - currentDistance;
+        double sideSpeed = distanceError * kP;
+
+        // Drive left with negative X (left)
+        return -sideSpeed * MaxSpeed;
+    }
+
+    private double DistanceToTargetSideToSide() {
+        // h2 = h1 + d * tan(a1 + a2)
+        // https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-estimating-distance
+
+        double h1 = Units.inchesToMeters(0); // side offset of the camera
+        double d = DistanceToTargetForward(); // distance forward to the target
+        double a1 = Units.degreesToRadians(0); // x angle of the camera
+        double a2 = Units.degreesToRadians(LimelightHelpers.getTX("limelight")); // x angle of the target
+
+        return h1 + d * Math.tan(a1 + a2);
     }
 }
