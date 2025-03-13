@@ -45,7 +45,7 @@ public class ArmMoveCommands extends Command {
 
     public Command moveToHome() {
         return Commands.sequence(
-            new InstantCommand(() -> m_Arm.moveRotateArm(-28)),
+            new InstantCommand(() -> m_Arm.moveRotateArm(-32)),
             new InstantCommand(() -> m_Arm.moveLinearArmPickup()),
             Commands.waitSeconds(0.5),
             new InstantCommand(() -> m_Arm.moveWrist(90)),
@@ -62,7 +62,7 @@ public class ArmMoveCommands extends Command {
             ),
             Commands.waitSeconds(0.75),
             Commands.parallel(
-                new InstantCommand(() -> m_Arm.moveRotateArm(-28)),
+                new InstantCommand(() -> m_Arm.moveRotateArm(-32)),
                 new InstantCommand(() -> m_Arm.moveWrist(90))
             )
         );
