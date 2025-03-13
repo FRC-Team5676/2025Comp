@@ -172,6 +172,11 @@ public class RobotContainer {
         double deadband;
         double value = -driver.getTwist(); // Drive counterclockwise with negative twist (CCW)
 
+        // x = Axis 4: 1 bottom to -1 top
+        // translate to 1 bottom to 2 top using formula
+        // y = -0.5x + 1.5
+        double multiplier = -0.5 * driver.getRawAxis(4) + 1.5;
+
         if (Math.signum(value) <= 0) {
             // CCW
             deadband = 0.5; // larger on this side because of joystick sensitivity on CCW rotation
@@ -184,6 +189,6 @@ public class RobotContainer {
 
         value = MathUtil.applyDeadband(value, deadband);
         value = Math.signum(value) * Math.pow(value, 2);
-        return value * MaxAngularRate;
+        return value * MaxAngularRate * multiplier;
     }
 }
