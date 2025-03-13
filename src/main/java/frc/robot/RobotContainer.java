@@ -187,7 +187,7 @@ public class RobotContainer {
         // x = Axis 4: 1 bottom to -1 top
         // translate to 1 bottom to 2 top using formula
         // y = -0.5x + 1.5
-        double multiplier = -0.5 * driver.getRawAxis(4) + 1.5;
+        double multiplier = -0.5 * driver.getRawAxis(3) + 1.5;
 
         if (Math.signum(value) <= 0) {
             // CCW
