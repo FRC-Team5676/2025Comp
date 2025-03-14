@@ -20,6 +20,7 @@ public class TraySubsystem extends SubsystemBase {
 
   private final double trayUpPosition = 600;
   private final double trayDownPosition = 1400;
+  private final double coralPlacePosition = 2500;
 
   public TraySubsystem() {
     // Drive Motor setup
@@ -60,12 +61,17 @@ public class TraySubsystem extends SubsystemBase {
     setReferencePeriodic();
   }
 
+  public void moveToCoralPlacePosition() {
+    m_TargetRadians = coralPlacePosition;
+    setReferencePeriodic();
+  }
+
   public double getUpPosition() {
     return trayUpPosition;
   }
 
-  public double getDownPosition() {
-    return trayDownPosition;
+  public double getCoralPlacePosition() {
+    return coralPlacePosition;
   }
 
   public void driveTray(double degrees) {
@@ -82,7 +88,7 @@ public class TraySubsystem extends SubsystemBase {
   }
 
   private void setReferencePeriodic() {
-    m_TargetRadians = MathUtil.clamp(m_TargetRadians, trayUpPosition, trayDownPosition);
+    m_TargetRadians = MathUtil.clamp(m_TargetRadians, trayUpPosition, coralPlacePosition);
     m_driveMotor.set(ControlMode.Position, m_TargetRadians);
   }
 }

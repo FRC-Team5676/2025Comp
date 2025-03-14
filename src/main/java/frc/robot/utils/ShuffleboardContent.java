@@ -118,7 +118,7 @@ public class ShuffleboardContent {
                 drLayout1.addNumber("Min Angle", () -> drive.getUpPosition())
                         .withPosition(1, 3)
                         .withSize(2, 1);
-                drLayout1.addNumber("Max Angle", () -> drive.getDownPosition())
+                drLayout1.addNumber("Max Angle", () -> drive.getCoralPlacePosition())
                         .withPosition(1, 4)
                         .withSize(2, 1);
         }

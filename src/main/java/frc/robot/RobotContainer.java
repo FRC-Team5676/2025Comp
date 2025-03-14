@@ -117,6 +117,7 @@ public class RobotContainer {
         // Tray
         operator.povUp().onFalse(new InstantCommand(tray::moveToUpPosition));
         operator.povUp().whileTrue(new InstantCommand(tray::moveToDownPosition));
+        operator.povRight().onTrue(new InstantCommand(tray::moveToCoralPlacePosition));
 
         /* Move Arms To Zero */
         operator.button(XboxController.Button.kBack.value).onTrue(Commands.sequence(
@@ -219,7 +220,7 @@ public class RobotContainer {
         double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
 
         // Drive counterclockwise with negative twist (CCW)
-        return -targetingAngularVelocity * MaxAngularRate;
+        return targetingAngularVelocity * MaxAngularRate;
     }
 
     private double limelightForward() {
@@ -231,19 +232,19 @@ public class RobotContainer {
         double forwardSpeed = distanceError * kP;
 
         // Drive forward with negative Y (forward)
-        return -forwardSpeed * MaxSpeed;
+        return forwardSpeed * MaxSpeed;
     }
 
     private double DistanceToTargetForward() {
         // d = (h2-h1) / tan(a1+a2)
         // https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-estimating-distance
 
-        double h1 = Units.inchesToMeters(24); // height of the camera
+        double h1 = Units.inchesToMeters(28); // height of the camera
         double h2 = Units.inchesToMeters(12); // height of the target
-        double a1 = Units.degreesToRadians(0); // y angle of the camera
+        double a1 = Units.degreesToRadians(-23); // y angle of the camera
         double a2 = Units.degreesToRadians(LimelightHelpers.getTY("limelight")); // y angle of the target
 
-        return (h2 - h1) / Math.tan(a1 + a2);
+        return (h2 - h1) / Math.tan(a1 + a2) - Units.inchesToMeters(22);
     }
 
     private double limelightSideToSide() {
@@ -255,7 +256,7 @@ public class RobotContainer {
         double sideSpeed = distanceError * kP;
 
         // Drive left with negative X (left)
-        return -sideSpeed * MaxSpeed;
+        return sideSpeed * MaxSpeed;
     }
 
     private double DistanceToTargetSideToSide() {
