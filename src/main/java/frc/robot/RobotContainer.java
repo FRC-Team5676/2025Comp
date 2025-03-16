@@ -167,23 +167,38 @@ public class RobotContainer {
         double deadband = 0.05;
         double value = -driver.getX(); // Drive left with negative X (left)
 
+        double multiplier = 1;
+        if (driver.button(11).getAsBoolean()) {
+            multiplier = 0.1;
+        }
+
         value = MathUtil.applyDeadband(value, deadband);
         value = Math.signum(value) * Math.pow(value, 2);
-        return value * MaxSpeed;
+        return value * MaxSpeed * multiplier;
     }
 
     private double getY() {
         double deadband = 0.05;
         double value = -driver.getY(); // Drive forward with negative Y (forward)
 
+        double multiplier = 1;
+        if (driver.button(11).getAsBoolean()) {
+            multiplier = 0.1;
+        }
+
         value = MathUtil.applyDeadband(value, deadband);
         value = Math.signum(value) * Math.pow(value, 2);
-        return value * MaxSpeed;
+        return value * MaxSpeed * multiplier;
     }
 
     private double getTwist() {
         double deadband;
         double value = -driver.getTwist(); // Drive counterclockwise with negative twist (CCW)
+
+        double multiplierButton = 1;
+        if (driver.button(11).getAsBoolean()) {
+            multiplierButton = 0.1;
+        }
 
         // x = Axis 4: 1 bottom to -1 top
         // translate to 1 bottom to 2 top using formula
@@ -202,7 +217,7 @@ public class RobotContainer {
 
         value = MathUtil.applyDeadband(value, deadband);
         value = Math.signum(value) * Math.pow(value, 2);
-        return value * MaxAngularRate * multiplier;
+        return value * MaxAngularRate * multiplier * multiplierButton;
     }
 
     private double limelightRotation() {
