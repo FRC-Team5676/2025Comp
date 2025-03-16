@@ -65,7 +65,8 @@ public class RobotContainer {
     }
 
     private void addAutonomousChoices() {
-        autonManager.addDefaultOption("Middle To Side", AutoCommands.moveMiddleToSide(tray));
+        autonManager.addDefaultOption("Left with Move to Source", AutoCommands.moveLeftAndSource(tray));
+        autonManager.addOption("Middle To Side", AutoCommands.moveMiddleToSide(tray));
         autonManager.addOption("Left", AutoCommands.moveLeft(tray));
         autonManager.addOption("Right", AutoCommands.moveRight(tray));
         
