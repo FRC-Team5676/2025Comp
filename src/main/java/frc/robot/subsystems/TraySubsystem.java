@@ -20,7 +20,7 @@ public class TraySubsystem extends SubsystemBase {
 
   private final double trayUpPosition = 600;
   private final double trayDownPosition = 1400;
-  private final double coralPlacePosition = 2500;
+  private final double coralPlacePosition = 2800;
 
   public TraySubsystem() {
     // Drive Motor setup

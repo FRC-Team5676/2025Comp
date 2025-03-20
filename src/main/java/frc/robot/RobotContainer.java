@@ -216,7 +216,7 @@ public class RobotContainer {
         // rightmost edge of
         // your limelight 3 feed, tx should return roughly 31 degrees.
 
-        double kP = .035;
+        double kP = .0035;
         double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
 
         // Drive counterclockwise with negative twist (CCW)
@@ -241,14 +241,14 @@ public class RobotContainer {
 
         double h1 = Units.inchesToMeters(28); // height of the camera
         double h2 = Units.inchesToMeters(12); // height of the target
-        double a1 = Units.degreesToRadians(-23); // y angle of the camera
+        double a1 = Units.degreesToRadians(-45); // y angle of the camera
         double a2 = Units.degreesToRadians(LimelightHelpers.getTY("limelight")); // y angle of the target
 
         return (h2 - h1) / Math.tan(a1 + a2) - Units.inchesToMeters(22);
     }
 
     private double limelightSideToSide() {
-        double kP = 0.1;
+        double kP = 1;
         double currentDistance = DistanceToTargetSideToSide();
         double desiredDistance = Units.inchesToMeters(0);
 
